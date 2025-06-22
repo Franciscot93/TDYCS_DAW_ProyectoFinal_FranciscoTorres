@@ -1,10 +1,11 @@
 import { Schema, model } from 'mongoose';
-import { IUsuario } from './Usuario';
+import { Usuario } from './Usuario';
 
-export interface IDoctor extends IUsuario {
+export interface IDoctor {
+  usuario: Schema.Types.ObjectId;
   especialidad: string;
   matricula: string;
-  horarioAtencion: {
+  horarioAtencion?: {
     dias: string[];
     horarioInicio: string;
     horarioFin: string;
@@ -12,6 +13,7 @@ export interface IDoctor extends IUsuario {
 }
 
 const doctorSchema = new Schema<IDoctor>({
+  usuario: { type: Schema.Types.ObjectId, ref: 'Usuario', required: true, unique: true },
   especialidad: { type: String, required: true },
   matricula: { type: String, required: true, unique: true },
   horarioAtencion: {

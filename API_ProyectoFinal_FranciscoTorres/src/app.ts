@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import { Database } from './services/Database';
 import usuariosRouter from './routes/usuarios.routes';
 import turnosRouter from './routes/turnos.routes';
+import authRouter from './routes/auth.routes';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -13,7 +14,7 @@ app.use(bodyParser.json());
 
 app.use('/api', usuariosRouter);
 app.use('/api', turnosRouter);
-
+app.use('/api/auth', authRouter);
 
 const db = Database.getInstance();
 db.connect().then(() => {
