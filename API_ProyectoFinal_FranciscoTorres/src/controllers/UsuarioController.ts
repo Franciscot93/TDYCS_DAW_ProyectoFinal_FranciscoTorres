@@ -64,8 +64,9 @@ export class UsuarioController {
       });
 
     } catch (error: any) {
+      console.log(error);
       if (error.code === 11000) {
-        res.status(400).json({ error: 'El email o DNI ya está registrado' });
+        res.status(400).json({ error: 'El email o DNI o Matricula ya está registrado ' });
       } else {
         console.error('Error al crear usuario:', error);
         res.status(500).json({ error: 'Error interno del servidor al crear usuario' });
