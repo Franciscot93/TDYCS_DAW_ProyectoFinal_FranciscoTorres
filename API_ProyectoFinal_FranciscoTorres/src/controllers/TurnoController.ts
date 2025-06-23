@@ -4,7 +4,16 @@ import { Turno } from '../models/Turno';
 export class TurnoController {
   public async crearTurno(req: Request, res: Response): Promise<void> {
     try {
-      const nuevoTurno = new Turno(req.body);
+      console.log(req);
+      const { fecha, doctor, motivo, notas } = req.body;
+      const nuevoTurno = new Turno({
+         fecha,
+        doctor,
+        motivo,
+        notas: notas || '',
+        paciente: (req as any).user.id, 
+        estado: 'pendiente' 
+      });
       await nuevoTurno.save();
       res.status(201).json(nuevoTurno);
     } catch (error) {

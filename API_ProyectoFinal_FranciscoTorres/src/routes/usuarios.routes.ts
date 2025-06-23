@@ -8,8 +8,8 @@ const usuarioController = new UsuarioController();
 
 router.post('/usuarios', usuarioController.crearUsuario);
 router.get('/usuarios', authMiddleware, roleMiddleware(['admin']), usuarioController.obtenerUsuarios);
-router.get('/usuarios/:id', usuarioController.obtenerUsuarioPorId);
-router.put('/usuarios/:id', usuarioController.actualizarUsuario);
-router.delete('/usuarios/:id', usuarioController.eliminarUsuario);
+router.get('/usuarios/:id',authMiddleware, roleMiddleware(['admin','doctor']), usuarioController.obtenerUsuarioPorId);
+router.put('/usuarios/:id',authMiddleware, roleMiddleware(['admin']), usuarioController.actualizarUsuario);
+router.delete('/usuarios/:id',authMiddleware, roleMiddleware(['admin']), usuarioController.eliminarUsuario);
 
 export default router;
