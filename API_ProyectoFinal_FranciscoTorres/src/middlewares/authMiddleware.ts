@@ -12,6 +12,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
 
     const decoded = await AuthService.verifyToken(token);
     (req as any).user = decoded;
+    console.log(decoded);
     next();
   } catch (error) {
     res.status(401).json({ error: 'Por favor autentíquese' });

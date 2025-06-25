@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { Turno } from "../models/Turno";
-import { Usuario } from "../models/Usuario";
 
 export class TurnoController {
   public async crearTurno(req: Request, res: Response): Promise<void> {
@@ -24,7 +23,15 @@ export class TurnoController {
 
   public async obtenerTurnos(req: Request, res: Response): Promise<void> {
     try {
-      const turnos = await Turno.find().populate("paciente").populate("doctor");
+      const turnos = await Turno.find().populate({
+          path: "paciente",
+          model: "Usuario" 
+          
+        })
+        .populate({
+          path: "doctor",
+          model: "Usuario"
+        });
       res.json(turnos);
     } catch (error) {
       res.status(500).json({ error: "Error al obtener turnos" });
@@ -36,12 +43,12 @@ export class TurnoController {
       const turno = await Turno.findById(req.params.id)
         .populate({
           path: "paciente",
-          model: "Paciente", // Nombre exacto del modelo
-          select: "nombre apellido email", // Campos específicos que quieres
+          model: "Paciente", 
+          select: "nombre apellido email", 
         })
         .populate({
           path: "doctor",
-          model: "Doctor", // Nombre exacto del modelo
+          model: "Doctor", 
           select: "nombre apellido especialidad",
         });
 
@@ -60,8 +67,15 @@ export class TurnoController {
       const turno = await Turno.findByIdAndUpdate(req.params.id, req.body, {
         new: true,
       })
-        .populate("paciente")
-        .populate("doctor");
+         .populate({
+          path: "paciente",
+          model: "Usuario" 
+          
+        })
+        .populate({
+          path: "doctor",
+          model: "Usuario"
+        });
 
       if (!turno) {
         res.status(404).json({ error: "Turno no encontrado" });
@@ -92,8 +106,15 @@ export class TurnoController {
   ): Promise<void> {
     try {
       const turnos = await Turno.find({ doctor: req.params.doctorId })
-        .populate("paciente")
-        .populate("doctor");
+        .populate({
+          path: "paciente",
+          model: "Usuario" 
+          
+        })
+        .populate({
+          path: "doctor",
+          model: "Usuario"
+        });
       res.json(turnos);
     } catch (error) {
       res.status(500).json({ error: "Error al obtener turnos del doctor" });
@@ -115,7 +136,7 @@ export class TurnoController {
       const turnos = await Turno.find({ paciente: req.params.pacienteId })
         .populate({
           path: "paciente",
-          model: "Usuario" // Nombre exacto del modelo
+          model: "Usuario" 
           
         })
         .populate({
