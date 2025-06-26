@@ -2,9 +2,10 @@ import express from 'express';
 import { TurnoController } from '../controllers/TurnoController';
 import { authMiddleware } from '../middlewares/authMiddleware';
 import { roleMiddleware } from '../middlewares/roleMiddleware';
+import { TurnoService } from '../../capa-negocio/services/TurnoService';
 const router = express.Router();
-const turnoController = new TurnoController();
-
+const turnoServicio= new TurnoService()
+const turnoController = new TurnoController(turnoServicio);
 router.post('/turnos',authMiddleware,roleMiddleware(['admin','doctor','paciente']) ,turnoController.crearTurno);
 router.get('/turnos', authMiddleware, roleMiddleware(['admin']),turnoController.obtenerTurnos);
 router.get('/turnos/:id',authMiddleware, roleMiddleware(['admin','doctor','paciente']) ,turnoController.obtenerTurnoPorId);

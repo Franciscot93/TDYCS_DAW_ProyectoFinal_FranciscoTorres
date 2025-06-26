@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { AuthService } from '../services/AuthService';
+import { AuthService } from '../../capa-negocio/services/AuthService';
 
 export const authMiddleware = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
@@ -10,7 +10,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
       return;
     }
 
-    const decoded = await AuthService.verifyToken(token);
+    const decoded =  AuthService.verificarToken(token);
     (req as any).user = decoded;
     console.log(decoded);
     next();

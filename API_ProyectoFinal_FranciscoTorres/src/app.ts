@@ -1,33 +1,23 @@
-import express from 'express';
-import bodyParser from 'body-parser';
-import { Database } from './services/Database';
-import usuariosRouter from './routes/usuarios.routes';
-import turnosRouter from './routes/turnos.routes';
-import authRouter from './routes/auth.routes';
+import { config } from './config';
+import { startDataLayer } from './capa-datos/server';
+import { startBusinessLayer } from './capa-negocio/server';
+import { startPresentationLayer } from './capa-presentacion/server';
 
-const app = express();
-const port = process.env.PORT || 3000;
+async function main() {
+  try {
+    // Iniciar las 3 capas
+    await startDataLayer();
+    await startBusinessLayer();
+    await startPresentationLayer();
+    
+    console.log(`✅ Todos los servicios están corriendo:
+  - Datos: http://localhost:${config.ports.datos}
+  - Negocio: http://localhost:${config.ports.negocio}
+  - Presentación: http://localhost:${config.ports.presentacion}`);
+  } catch (error) {
+    console.error('❌ Error al iniciar la aplicación:', error);
+    process.exit(1);
+  }
+}
 
-
-app.use(bodyParser.json());
-
-
-app.use('/api', usuariosRouter);
-app.use('/api', turnosRouter);
-app.use('/api/auth', authRouter);
-
-const db = Database.getInstance();
-db.connect().then(() => {
-  app.listen(port, () => {
-    console.log(`Servidor corriendo en http://localhost:${port}`);
-  });
-});
-
-
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Algo salió mal!' });
-});
-
-
-export default app;
+main();
