@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import { config } from '../config';
 import turnoRoutes from '../capa-presentacion/routes/turnos.routes';
 import usuarioRoutes from '../capa-presentacion/routes/usuarios.routes';
-
+import authRouter from '../capa-presentacion/routes/auth.routes'
 export async function startDataLayer() {
   const app = express();
   
@@ -14,6 +14,7 @@ export async function startDataLayer() {
   app.use(express.json());
   
   // Rutas
+   app.use('/auth',authRouter);
   app.use('/turnos', turnoRoutes);
   app.use('/usuarios', usuarioRoutes);
   

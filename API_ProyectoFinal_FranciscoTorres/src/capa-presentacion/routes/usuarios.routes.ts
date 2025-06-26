@@ -13,7 +13,8 @@ const doctorService=new DoctorService()
 const usuarioController = new UsuarioController(usuarioService,pacienteService,doctorService);
 
 router.post('/usuarios', usuarioController.crearUsuario);
-router.get('/usuarios', authMiddleware, roleMiddleware(['admin']), usuarioController.listarUsuarios);
+router.post('/usuarios/login', usuarioController.login);
+router.get('/usuarios', authMiddleware, roleMiddleware(['admin']),(req: Request, res: Response) =>{ usuarioController.listarUsuarios(req,res)});
 router.get('/usuarios/:id',authMiddleware, roleMiddleware(['admin','doctor','paciente']), usuarioController.obtenerPorId);
 router.put('/usuarios/:id',authMiddleware, roleMiddleware(['admin']), usuarioController.actualizarUsuario);
 router.delete('/usuarios/:id',authMiddleware, roleMiddleware(['admin']),(req: Request, res: Response) =>{ usuarioController.eliminarUsuario(req, res)});

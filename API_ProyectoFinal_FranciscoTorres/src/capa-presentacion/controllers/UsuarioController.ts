@@ -8,10 +8,10 @@ export class UsuarioController {
 
  }
 
-  crearUsuario= async (req: Request, res: Response)=> {
+    crearUsuario =async(req: Request, res: Response)=> {
     try {
+      
       const { rol, ...usuarioData } = req.body;
-
       const usuario = await this.usuarioService.registrarUsuario({
         ...usuarioData,
         rol,
@@ -78,6 +78,7 @@ export class UsuarioController {
 
  listarUsuarios= async (req: Request, res: Response)=> {
     try {
+      
       const usuarios = await this.usuarioService.listarTodos();
       res.status(200).json(usuarios);
     } catch (error: any) {

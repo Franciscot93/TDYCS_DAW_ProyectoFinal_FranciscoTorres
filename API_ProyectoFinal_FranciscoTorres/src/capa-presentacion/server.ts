@@ -9,13 +9,12 @@ import authRouter from './routes/auth.routes';
 export async function startPresentationLayer() {
   const app = express();
   
-  // Middlewares
+//   // Middlewares
   app.use(express.json());
   
-app.use('/api/', authRouter); 
-app.use(authMiddleware);
-app.use('/api/', usuariosRouter);
-app.use('/api/', turnosRouter);
+ app.use('/api/', authRouter); 
+ app.use('/api/', usuariosRouter);
+ app.use('/api/', turnosRouter);
   
   return app.listen(config.ports.presentacion, () => {
     console.log(`🎨 Capa Presentación en http://localhost:${config.ports.presentacion}`);

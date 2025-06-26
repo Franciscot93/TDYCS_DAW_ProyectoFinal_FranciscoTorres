@@ -54,6 +54,7 @@ export class AuthService {
   private usuarioRepo = new UsuarioRepository();
 
   public async login(email: string, password: string) {
+    console.log(email);
     const usuario = await this.usuarioRepo.obtenerPorEmail(email);
     
     if (!usuario || !(await usuario.comparePassword(password))) {

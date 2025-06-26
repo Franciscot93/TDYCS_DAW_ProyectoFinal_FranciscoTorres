@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.post('/login', async (req, res) => {
   try {
+    console.log(req);
     const { email, password } = req.body;
     
     const { token, usuario } = await NewAuth.login(email, password);
