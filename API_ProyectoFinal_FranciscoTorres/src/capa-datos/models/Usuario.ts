@@ -24,7 +24,6 @@ const usuarioSchema = new Schema<IUsuario>({
   fechaCreacion: { type: Date, default: Date.now }
 });
 
-// Hash password antes de guardar
 usuarioSchema.pre<IUsuario>('save', async function(next) {
   if (!this.isModified('password')) return next();
   
@@ -37,11 +36,21 @@ usuarioSchema.pre<IUsuario>('save', async function(next) {
   }
 });
 
-// Método para comparar passwords
 usuarioSchema.methods.comparePassword = async function(
   candidatePassword: string
 ): Promise<boolean> {
   return await bcrypt.compare(candidatePassword, this.password);
 };
+usuarioSchema.set('toJSON', {
+  virtuals: true,
+  transform: function(doc, ret) {
+    ret._id = ret._id.toString();
+    delete ret._id;
+    delete ret.__v;
+    delete ret.fechaCreacion
+    delete ret.password;
+    return ret;
+  }
+});
 
 export const Usuario = model<IUsuario>('Usuario', usuarioSchema);

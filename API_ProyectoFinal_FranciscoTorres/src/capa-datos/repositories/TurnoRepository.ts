@@ -49,6 +49,7 @@ export class TurnoRepository {
   }
 
   async obtenerPorDoctor(doctorId: string) {
+    console.log("repo");
     return TurnoModel.find({ doctor: doctorId })
       .populate({
           path: "paciente",

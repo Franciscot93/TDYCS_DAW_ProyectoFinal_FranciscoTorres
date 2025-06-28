@@ -1,42 +1,47 @@
-import { TurnoRepository } from '../../capa-datos/repositories/TurnoRepository';
+import axios from 'axios';
+import { config } from '../../config';
 
 export class TurnoService {
-  private repo = new TurnoRepository();
- 
-  constructor(){
+  private baseUrl = `http://localhost:${config.ports.datos}/turnos`;
 
-    }
- public async crearTurno(datos: any, usuarioId: string) {
-    const turnoData = {
-      ...datos,
-      paciente: usuarioId,
-      estado: 'pendiente'
-    };
-    return this.repo.crear(turnoData);
+  async crearTurno(datos: any, usuarioId: string) {
+      datos.paciente= usuarioId
+      datos.estado= 'pendiente'
+    
+    const response = await axios.post(`${this.baseUrl}`, datos);
+    return response.data;
   }
 
- public async obtenerTurnos() {
-    return this.repo.obtenerTodos();
+  async obtenerTurnos() {
+    console.log("servicio");
+    const response = await axios.get(`${this.baseUrl}`)
+    return response.data;
   }
 
- public async obtenerTurno(id: string) {
-    return this.repo.obtenerPorId(id);
+  async obtenerTurno(id: string) {
+    const response = await axios.get(`${this.baseUrl}/${id}`);
+    return response.data;
   }
 
- public async actualizarTurno(id: string, datos: any) {
-    return this.repo.actualizar(id, datos);
+  public async actualizarTurno(id: string, datos: any) {
+    const response = await axios.put(`${this.baseUrl}/${id}`,datos)
+    return response.data
   }
 
  public async eliminarTurno(id: string) {
-    return this.repo.eliminar(id);
+    const response = await axios.delete(`${this.baseUrl}/${id}`)
+    return response.data
   }
 
  public async obtenerTurnosDoctor(doctorId: string) {
-    return this.repo.obtenerPorDoctor(doctorId);
+  console.log("llego a servicio");
+    const response = await axios.get(`${this.baseUrl}/doctor/${doctorId}`)
+    return response.data
   }
 
- public async obtenerTurnosPaciente(pacienteId: string) {
-    const turnos =await this.repo.obtenerPorPaciente(pacienteId)
-    return turnos;
+ public async obtenerTurnosPaciente(pacienteId: string) 
+ { 
+   const response = await axios.get(`${this.baseUrl}/pacientes/${pacienteId}`)
+    return response.data
   }
 }

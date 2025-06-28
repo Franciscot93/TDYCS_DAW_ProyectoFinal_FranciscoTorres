@@ -1,100 +1,101 @@
 import { Request, Response } from 'express';
-import { TurnoService } from '../../capa-negocio/services/TurnoService';
-
+import axios from 'axios';
+import { config } from '../../config';
 
 export class TurnoController {
-  
-  constructor(private readonly _servicio:TurnoService,){
+  private baseUrl = `http://localhost:${config.ports.negocio}/turnos`;
 
-  }
-  crearTurno= async(req: Request, res: Response)=> {
+  async crearTurno(req: Request, res: Response) {
     try {
-      const turno = await  this._servicio.crearTurno(req.body, (req as any).user.id);
-      res.status(201).json(turno);
-    } catch (error) {
-      res.status(500).json({ error: 'Error al crear turno' });
-    }
-  }
-obtenerTurnos= async(req: Request, res: Response)=>{
-    try {
-      const turnos = await  this._servicio.obtenerTurnos();
-      res.json(turnos);
-    } catch (error) {
-      res.status(500).json({ error: 'Error al obtener turnos' });
+      const response = await axios.post(`${this.baseUrl}`, {
+        ...req.body,
+        paciente:(req as any).user._id ||(req as any).user.id, 
+      });
+      res.status(201).json(response.data);
+    } catch (error: any) {
+      res.status(500).json({ 
+        error: 'Error al crear turno',
+        details: error.response?.data || error.message 
+      });
     }
   }
 
-  obtenerTurnoPorId= async(req: Request, res: Response)=>{
-      const idTurno = req.params.id;
-    console.log(idTurno);
-    
+  async obtenerTurnos(req: Request, res: Response) {
     try {
-      const turnos = await this._servicio.obtenerTurno(idTurno);
-      res.json(turnos);
-    } catch (error) {
+      console.log("controller");
+      const response = await axios.get(`${this.baseUrl}`);
+      res.json(response.data);
+    } catch (error: any) {
+      res.status(500).json({ 
+        error: 'Error al obtener turnos',
+        details: error.response?.data || error.message 
+      });
+    }
+  }
+
+  async obtenerTurnoPorId(req: Request, res: Response) {
+    try {
+      const response = await axios.get(`${this.baseUrl}/${req.params.id}`);
+      res.json(response.data);
+    } catch (error: any) {
+      res.status(500).json({ 
+        error: 'Error al obtener el turno',
+        details: error.response?.data || error.message 
+      });
+    }
+  }
+
+  async actualizarTurno(req: Request, res: Response) {
+    try {
+      const response = await axios.put(`${this.baseUrl}/turnos/${req.params.id}`, req.body);
+      res.json(response.data);
+    } catch (error: any) {
+      res.status(500).json({ 
+        error: 'Error al actualizar el turno',
+        details: error.response?.data || error.message 
+      });
+    }
+  }
+
+  async eliminarTurno(req: Request, res: Response) {
+    try {
+      const response = await axios.delete(`${this.baseUrl}/turnos/${req.params.id}`);
+      res.json(response.data);
+    } catch (error: any) {
+      res.status(500).json({ 
+        error: 'Error al eliminar el turno',
+        details: error.response?.data || error.message 
+      });
+    }
+  }
+
+  async obtenerTurnosPorDoctor(req: Request, res: Response) {
+    try {
+      const response = await axios.get(`${this.baseUrl}/doctor/${req.params.doctorId}`);
+      res.json(response.data);
+    } catch (error: any) {
+      res.status(500).json({ 
+        error: 'Error al obtener turnos del doctor',
+        details: error.response?.data || error.message 
+      });
+    }
+  }
+
+  obtenerTurnosPorPaciente=async(req: Request, res: Response)=> {
+    if ( (req as any).user.rol !=='admin' && req.params.pacienteId !== (req as any).user._id) {
+      return res.status(403).json({ error: "No tienes permisos para ver estos turnos" });
+    }
+    try {
+      console.log(`${this.baseUrl}/paciente/${req.params.pacienteId}`);
+      const response = await axios.get(`${this.baseUrl}/pacientes/${req.params.pacienteId}`);
+      res.json(response.data);
+    } catch (error: any) {
       console.log(error);
-      res.status(500).json({ error: 'Error al obtener los datos del turno' });
+      res.status(500).json({ 
+        
+        error: 'Error al obtener turnos del paciente',
+        details: error.response?.data || error.message 
+      });
     }
   }
-   actualizarTurno= async(req: Request, res: Response)=>{
-      const idTurno = req.params.id;
-    console.log(idTurno);
-     
-    try {
-      const turnos = await this._servicio.actualizarTurno(idTurno,req.body);
-      res.json(turnos);
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: 'Error al actualizar los datos del turno' });
-    }
-  }
-
-  eliminarTurno= async(req: Request, res: Response)=>{
-    const idTurno = req.params.id;
- 
-    
-    try {
-      const turnos = await this._servicio.eliminarTurno(idTurno);
-      res.json(turnos);
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: 'Error al eliminar el turno' });
-    }
-  } 
-
-   obtenerTurnosPorDoctor= async(req: Request, res: Response)=>{
-      const idDoctor = req.params.id;
-    console.log(idDoctor);
-    
-    try {
-      const turnos = await this._servicio.obtenerTurnosDoctor(idDoctor);
-      res.json(turnos);
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: 'Error al obtener los datos del turno' });
-    }
-  }
-
-
-obtenerTurnosPorPaciente = async (req: Request, res: Response) => {
-    if ((req as any).user.rol === "paciente" &&
-      req.params.pacienteId != (req as any).user.id
-    ) {
-      res.status(404).json({ error: "Paciente diferente al registrado" });
-      return;
-    }
-    
-    const pacienteId = req.params.pacienteId;
-    console.log(pacienteId);
-    
-    try {
-      const turnos = await this._servicio.obtenerTurnosPaciente(pacienteId);
-      res.json(turnos);
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: 'Error al obtener los turnos del paciente' });
-    }
-  }
-  
-
 }

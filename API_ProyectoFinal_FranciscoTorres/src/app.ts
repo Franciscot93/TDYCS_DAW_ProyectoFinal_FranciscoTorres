@@ -1,11 +1,11 @@
 import { config } from './config';
 import { startDataLayer } from './capa-datos/server';
-import { startBusinessLayer } from './capa-negocio/server';
+import { startBusinessLayer } from './capa-negocio/server'
 import { startPresentationLayer } from './capa-presentacion/server';
 
 async function main() {
   try {
-    // Iniciar las 3 capas
+    
     await startDataLayer();
     await startBusinessLayer();
     await startPresentationLayer();

@@ -1,34 +1,70 @@
-import { DoctorRepository } from '../../capa-datos/repositories/DoctorRepository';
+import axios from 'axios';
+import { config } from '../../config';
 
 export class DoctorService {
-  private repo = new DoctorRepository();
+  private baseUrl = `http://localhost:${config.ports.datos}/doctores`;
 
   async crearDoctor(doctorData: any) {
-    return this.repo.crear(doctorData);
+    try {
+      console.log("doc service:",this.baseUrl)
+      const response = await axios.post(`${this.baseUrl}`, doctorData);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Error al crear doctor');
+    }
   }
 
   async obtenerPorId(id: string) {
-    return this.repo.obtenerPorId(id);
+    try {
+      const response = await axios.get(`${this.baseUrl}/${id}`);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Doctor no encontrado');
+    }
   }
 
   async obtenerPorUsuarioId(usuarioId: string) {
-    return this.repo.obtenerPorUsuarioId(usuarioId);
+    try {
+      const response = await axios.get(`${this.baseUrl}/usuario/${usuarioId}`);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Doctor no encontrado');
+    }
   }
 
   async actualizar(id: string, datos: any) {
-    return this.repo.actualizar(id, datos);
+    try {
+      const response = await axios.put(`${this.baseUrl}/${id}`, datos);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Error al actualizar doctor');
+    }
   }
 
   async eliminar(id: string) {
-    return this.repo.eliminar(id);
+    try {
+      const response = await axios.delete(`${this.baseUrl}/${id}`);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Error al eliminar doctor');
+    }
   }
 
   async listarTodos() {
-    return this.repo.listarTodos();
+    try {
+      const response = await axios.get(`${this.baseUrl}`);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Error al listar doctores');
+    }
   }
 
-  async eliminarPorUsuarioId(usuarioId:string){
-    return this.repo.eliminarPorUsuarioId(usuarioId)
+  async eliminarPorUsuarioId(usuarioId: string) {
+    try {
+      const response = await axios.delete(`${this.baseUrl}/usuario/${usuarioId}`);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Error al eliminar doctor');
+    }
   }
-  
 }

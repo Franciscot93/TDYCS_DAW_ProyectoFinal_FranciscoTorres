@@ -1,18 +1,17 @@
 import express from 'express';
-import { AuthService} from '../../../src/capa-negocio/services/AuthService'
-
-const NewAuth:AuthService= new AuthService()
+import { config } from '../../config';
+import axios from 'axios';
+import { AuthController } from '../controllers/AuthController';
 const router = express.Router();
-
-router.post('/login', async (req, res) => {
+const _authController :AuthController= new AuthController()
+router.post('/auth/login', async (req, res) => {
   try {
-    console.log(req);
-    const { email, password } = req.body;
     
-    const { token, usuario } = await NewAuth.login(email, password);
-    res.json({ token, usuario });
+    const response= await _authController.login(req,res);
+    
+
+    res.json( response );
   } catch (error: any) {
-    console.log('aqui');
     res.status(400).json({ error: error.message });
   }
 });

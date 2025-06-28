@@ -24,7 +24,7 @@ export class Database {
       const dbNAME= process.env.MONGO_DB_NAME
       const UriDB= dbUri + dbNAME
       await mongoose.connect(UriDB);
-      console.log('Conexión a MongoDB establecida');
+      console.log('Conexión a MongoDB establecida en capa de datos');
     } catch (error) {
       console.error('Error al conectar a MongoDB:', error);
       process.exit(1);

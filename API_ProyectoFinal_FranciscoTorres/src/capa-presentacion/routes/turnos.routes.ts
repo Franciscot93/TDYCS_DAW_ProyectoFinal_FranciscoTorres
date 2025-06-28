@@ -1,17 +1,15 @@
-import express from 'express';
+import express,{ Request, Response } from 'express';
 import { TurnoController } from '../controllers/TurnoController';
 import { authMiddleware } from '../middlewares/authMiddleware';
 import { roleMiddleware } from '../middlewares/roleMiddleware';
-import { TurnoService } from '../../capa-negocio/services/TurnoService';
 const router = express.Router();
-const turnoServicio= new TurnoService()
-const turnoController = new TurnoController(turnoServicio);
-router.post('/turnos',authMiddleware,roleMiddleware(['admin','doctor','paciente']) ,turnoController.crearTurno);
-router.get('/turnos', authMiddleware, roleMiddleware(['admin']),turnoController.obtenerTurnos);
-router.get('/turnos/:id',authMiddleware, roleMiddleware(['admin','doctor','paciente']) ,turnoController.obtenerTurnoPorId);
-router.put('/turnos/:id', authMiddleware, roleMiddleware(['admin']),turnoController.actualizarTurno);
-router.delete('/turnos/:id', authMiddleware, roleMiddleware(['admin']), turnoController.eliminarTurno);
-router.get('/turnos/doctor/:doctorId',authMiddleware, roleMiddleware(['admin','doctor']) ,turnoController.obtenerTurnosPorDoctor);
-router.get('/turnos/paciente/:pacienteId',authMiddleware, roleMiddleware(['admin','doctor','paciente']), turnoController.obtenerTurnosPorPaciente);
+const turnoController = new TurnoController();
+router.post('/turnos',authMiddleware,roleMiddleware(['admin','doctor','paciente']) ,(req:Request,res:Response)=>{turnoController.crearTurno(req,res)});
+router.get('/turnos', authMiddleware, roleMiddleware(['admin']),(req:Request,res:Response)=>{turnoController.obtenerTurnos(req,res)});
+router.get('/turnos/:id',authMiddleware, roleMiddleware(['admin','doctor','paciente']) ,(req:Request,res:Response)=>{turnoController.obtenerTurnoPorId(req,res)});
+router.put('/turnos/:id', authMiddleware, roleMiddleware(['admin']),(req:Request,res:Response)=>{turnoController.actualizarTurno(req,res)});
+router.delete('/turnos/:id', authMiddleware, roleMiddleware(['admin']),(req:Request,res:Response)=>{ turnoController.eliminarTurno(req,res)});
+router.get('/turnos/doctor/:doctorId',authMiddleware, roleMiddleware(['admin','doctor']) ,(req:Request,res:Response)=>{turnoController.obtenerTurnosPorDoctor(req,res)});
+router.get('/turnos/paciente/:pacienteId',authMiddleware, [roleMiddleware(['admin','doctor','paciente'])], (req:Request,res:Response)=>{turnoController.obtenerTurnosPorPaciente(req,res)});
 
 export default router;
