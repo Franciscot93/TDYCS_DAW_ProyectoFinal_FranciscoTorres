@@ -44,4 +44,31 @@ export class TurnoService {
    const response = await axios.get(`${this.baseUrl}/pacientes/${pacienteId}`)
     return response.data
   }
+
+
+async actualizarParcialTurno(id: string, datosActualizacion: any) {
+  //try {
+  //   // Validar que exista el turno
+  //   //const turnoExistente = await s(id);
+  //   if (!turnoExistente) {
+  //     throw new Error('Turno no encontrado');
+  //   }
+
+  //   // Actualizar solo los campos proporcionados
+  //   const datosActualizados = {
+  //     ...turnoExistente,
+  //     ...datosActualizacion,
+  //     ultimaActualizacion: new Date() // Campo de auditoría
+  //   };
+
+  //   // Enviar la actualización a la capa de datos
+  //   const response = await axios.patch(`${this.baseUrl}/turnos/${id}`, datosActualizados);
+    
+  //   return response.data;
+  // } catch (error: any) {
+  //   console.error('Error en actualizarParcialTurno:', error);
+  //   throw new Error(error.response?.data?.message || 'Error al actualizar turno');
+  
+   //}
+}
 }

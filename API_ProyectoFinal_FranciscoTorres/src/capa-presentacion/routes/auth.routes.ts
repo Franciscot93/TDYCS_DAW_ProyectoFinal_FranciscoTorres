@@ -1,6 +1,5 @@
 import express from 'express';
-import { config } from '../../config';
-import axios from 'axios';
+
 import { AuthController } from '../controllers/AuthController';
 const router = express.Router();
 const _authController :AuthController= new AuthController()

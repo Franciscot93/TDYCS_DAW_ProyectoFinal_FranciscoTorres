@@ -10,9 +10,9 @@ export async function startPresentationLayer() {
   
 
 app.use(express.json());
-app.use('/api/', authRouter); 
-app.use('/api/', usuariosRouter);
-app.use('/api/', turnosRouter);
+app.use('/api/v1/', authRouter); 
+app.use('/api/v1/', usuariosRouter);
+app.use('/api/v1/', turnosRouter);
   
   return app.listen(config.ports.presentacion, () => {
     console.log(`🎨 Capa Presentación en http://localhost:${config.ports.presentacion}`);
